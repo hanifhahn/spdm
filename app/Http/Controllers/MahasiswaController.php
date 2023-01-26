@@ -7,12 +7,22 @@ use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('dashboard', [
-            'mahasiswas' => Mahasiswa::all(),
-            // 'mahasiswas' => Mahasiswa::sortable()->paginate(5),
-        ]);
+        // return view('dashboard', [
+        //     'mahasiswas' => Mahasiswa::all(),
+        //     // 'mahasiswas' => Mahasiswa::sortable()->paginate(5),
+        // ]);
+
+        if ($request->has('search')) {
+            return view('dashboard', [
+                'mahasiswas' => Mahasiswa::sortable()->where('nama', 'LIKE', '%' .$request->search. '%')->orWhere('prodi', 'LIKE', '%' .$request->search. '%')->paginate(5),
+            ]);
+        } else {
+            return view('dashboard', [
+                'mahasiswas' => Mahasiswa::sortable()->paginate(5),
+            ]);
+        }
     }
 
     public function showTambahMahasiswa()
